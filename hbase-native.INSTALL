@@ -1,0 +1,8 @@
+apt-get install wget binutils less libterm-readline-gnu-perl g++ libgflags-dev libgoogle-glog-dev vim build-essential ho dev dh-autoreconf pkg-config libssl-dev libboost-all-dev libevent-dev libdouble-conversion-dev cmake libprotobuf-dev libsasl2-dev
+
+# Install HWX native client tarball
+# Install Folly by hand
+# Install Wangle by hand
+# Install ZooKeeper client by hand
+
+g++ -I/usr/include/hbase -I/usr/local/include -L/usr/local/lib/ -L/usr/lib/hbase -L/usr/lib/x86_64-linux-gnu/ -lHBaseClient -lprotobuf -lzookeeper_mt -lfolly -lwangle -lsasl2 -lgflags -lglog -std=c++14 hbase-sample.cc
