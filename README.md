@@ -5,6 +5,10 @@ docker run --network=host --rm -it hbase-native
 
 Add the hostname of your machine to /etc/hosts with the IP shown as the default gateway in the output of `route` (e.g. 192.168.35.1 for me)
 
+This expects a version of HBase running on the host machine (or accesible to the internet). Be sure that the HBase
+servers have bound all interfaces (e.g. `hbase.master.ipc.address=0.0.0.0` and `hbase.regionserver.ipc.address=0.0.0.0`
+in hbase-site.xml). You will also need to create a table in this instance, e.g. `echo "create 'load_test_table', 'f'" | hbase shell`.
+
 The following should work to build the code:
 
 ```
