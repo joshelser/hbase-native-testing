@@ -1,4 +1,6 @@
-apt-get install wget binutils less libterm-readline-gnu-perl g++ libgflags-dev libgoogle-glog-dev vim build-essential ho dev dh-autoreconf pkg-config libssl-dev libboost-all-dev libevent-dev libdouble-conversion-dev cmake libprotobuf-dev libsasl2-dev
+docker run --rm -it ubuntu:16.04 /bin/bash
+
+apt-get update && apt-get install wget binutils less libterm-readline-gnu-perl g++ libgflags-dev libgoogle-glog-dev vim build-essential ho dev dh-autoreconf pkg-config libssl-dev libboost-all-dev libevent-dev libdouble-conversion-dev cmake libprotobuf-dev libsasl2-dev
 
 # Install HWX native client tarball
 # Install Folly by hand
