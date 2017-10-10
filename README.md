@@ -3,7 +3,7 @@ docker build . -t hbase-native
 docker run --network=host --rm -it hbase-native
 ```
 
-Add the hostname of your machine to /etc/hosts with the IP shown as the default route in the output of `route` (e.g. 192.168.35.1 for me)
+Add the hostname of your machine to /etc/hosts with the IP shown as the default gateway in the output of `route` (e.g. 192.168.35.1 for me)
 
 The following should work to build the code:
 
