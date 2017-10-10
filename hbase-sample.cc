@@ -26,7 +26,6 @@ using folly::Random;
 DEFINE_string(zookeeper, "localhost:2181", "What zk quorum to talk to");
 DEFINE_string(znode, "/hbase", "parent znode");
 DEFINE_string(table, "load_test_table", "What table to do the reads and writes with");
-DEFINE_string(families, "f", "comma separated list of column family names");
 
 int main(int argc, char *argv[]) {
   gflags::SetUsageMessage("Sample application");
@@ -45,22 +44,13 @@ int main(int argc, char *argv[]) {
   auto num_puts = 1000;
 
   auto client = std::make_unique<Client>(*conf);
-
-  std::vector<std::string> families;
-  std::size_t pos = 0, found;
-  while ((found = FLAGS_families.find_first_of(',', pos)) != std::string::npos) {
-    families.push_back(FLAGS_families.substr(pos, found - pos));
-    pos = found + 1;
-  }
-  families.push_back(FLAGS_families.substr(pos));
+  const std::string family = "f";
 
   LOG(INFO) << "Sending put requests";
   auto table = client->Table(*tn);
   std::string row = "asdf";
   auto put = Put{row};
-  for (auto family : families) {
-    put.AddColumn(family, "foo", "1");
-  }
+  put.AddColumn(family, "foo", "1");
   table->Put(put);
 
   LOG(INFO) << "Sending get requests";
@@ -73,9 +63,21 @@ int main(int argc, char *argv[]) {
     LOG(ERROR) << "Expected one result but got " << results.size();
     return 1;
   }
-  for (auto family : families) {
-    LOG(INFO) << "Row: " << results[0]->Row() << " " << family << ":foo -> " << results[0]->Value(family, "foo").value_or("FAILED!");
+  std::shared_ptr<hbase::Result> result = results[0];
+  if (result == nullptr || result->IsEmpty()) {
+    LOG(ERROR) << "Could not find the record!";
+  } else {
+    LOG(INFO) << result->DebugString();
   }
+  //    LOG(INFO) << "For family: " << family;
+  //    LOG(INFO) << "Row: " << result->Row();
+  //    if (result->Value(family, "foo")) {
+  //      LOG(INFO) << "Found the record!";
+  //      LOG(INFO) << "Row: " << result->Row() << " " << family << ":foo -> " << *(result->Value(family, "foo"));
+  //    } else {
+  //      LOG(ERROR) << "Could not find the record!";
+  //    }
+  //LOG(INFO) << "Row: " << results[0]->Row() << " " << family << ":foo -> " << results[0]->Value(family, "foo").value_or("FAILED!");
 
   client->Close();
 
