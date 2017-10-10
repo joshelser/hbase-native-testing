@@ -1,10 +1,18 @@
-docker run --rm -it ubuntu:16.04 /bin/bash
+docker run --network=host --rm -it ubuntu:16.04 /bin/bash
 
-apt-get update && apt-get install wget binutils less libterm-readline-gnu-perl g++ libgflags-dev libgoogle-glog-dev vim build-essential ho dev dh-autoreconf pkg-config libssl-dev libboost-all-dev libevent-dev libdouble-conversion-dev cmake libprotobuf-dev libsasl2-dev
+apt-get update && apt-get install wget binutils less libterm-readline-gnu-perl g++ libgflags-dev libgoogle-glog-dev vim build-essential dh-autoreconf pkg-config libssl-dev libboost-all-dev libevent-dev libdouble-conversion-dev cmake libprotobuf-dev libsasl2-dev libkrb5-dev
 
 # Install HWX native client tarball
+#   http://s3.amazonaws.com/dev.hortonworks.com/HDP/ubuntu16/2.x/BUILDS/2.6.3.0-179/tars/hbase/hbase_native_client.tar.gz
 # Install Folly by hand
+#   folly-2017.09.25.00
 # Install Wangle by hand
+#   wangle-2017.10.09.00
 # Install ZooKeeper client by hand
+#   zookeeper-3.4.6
 
+# Uhh
 g++ -I/usr/include/hbase -I/usr/local/include -L/usr/local/lib/ -L/usr/lib/hbase -L/usr/lib/x86_64-linux-gnu/ -lHBaseClient -lprotobuf -lzookeeper_mt -lfolly -lwangle -lsasl2 -lgflags -lglog -std=c++14 hbase-sample.cc
+
+# Working with Marc's SO
+g++ hbase-sample.cc -o hbase-sample  -rdynamic -Wl,-Bstatic -lprotobuf -Wl,-Bdynamic -lboost_thread -lboost_system -lboost_filesystem -lboost_chrono -lboost_date_time -lboost_atomic -lpthread -lsasl2 -lgflags -lkrb5 -lhbaseclient -Wl,-Bstatic -lzookeeper_mt  -Wl,-Bdynamic -lpthread /usr/local/lib/libfolly.so -lglog /usr/local/lib/libwangle.a -lssl -lcrypto /usr/local/lib/libfolly.so -lglog /usr/local/lib/libwangle.a -lssl -lcrypto -Wl,-Bstatic -lprotobuf -Wl,-Bdynamic -lboost_thread -lboost_system -lboost_filesystem -lboost_chrono -lboost_date_time -lboost_atomic -lpthread -lsasl2 -lgflags -lkrb5 -Wl,-Bstatic -lzookeeper_mt -Wl,-Bdynamic -Wl,-rpath,/usr/local/lib -std=c++14 -I/usr/include/hbase -I/usr/local/include -L/usr/local/lib -L/usr/lib/hbase
